@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Update and Upgrade System Packages
 echo "--------------------Updating and Upgrading System Packages--------------------"
 sudo apt-get update -y
@@ -5,7 +7,7 @@ sudo apt-get upgrade -y
 
 # Install Java Development Kit (JDK)
 echo "--------------------Installing Java Development Kit (JDK)--------------------"
-sudo apt-get install openjdk-8-jdk -y
+sudo apt-get install openjdk-17-jre -y
 
 # Install Python 3.8
 echo "--------------------Installing Python 3.8--------------------"
@@ -20,13 +22,19 @@ sudo apt-get install python3-pip -y
 
 # Install Jenkins
 echo "--------------------Installing Jenkins--------------------"
-sudo apt-get install wget -y
-sudo wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+# Add Jenkins GPG key
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+
+# Add Jenkins apt repository
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# Update package index and install Jenkins
 sudo apt-get update -y
 sudo apt-get install jenkins -y
-sudo apt-get install git -y
+
+# Start and enable Jenkins service
 sudo systemctl start jenkins
+sudo systemctl enable jenkins
 
 # Install Docker
 echo "--------------------Installing Docker--------------------"
